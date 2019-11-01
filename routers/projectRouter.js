@@ -21,4 +21,19 @@ router.get('/:id', (req, res) => {
   res.status(200).json(req.project);
 });
 
+router.post('/', middleware.validateProject, (req, res) => {
+  projectDb.insert(req.project)
+    .then(project => {
+      res.status(201).json({
+        message: 'successfully added project',
+        project,
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'POST /projects: ' + err.message,
+      });
+    })
+})
+
 module.exports = router;

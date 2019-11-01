@@ -29,6 +29,29 @@ exports.validateProjectId = function(req, res, next) {
     });
 }
 
+exports.validateProject = function(req, res, next) {
+  const { body } = req;
+
+  if (req.method === 'POST' || req.method === 'PUT') {
+    if (!body) {
+      res.status(400).json({
+        message: 'missing project data',
+      });
+    } else if (!body.name || body.name === "") {
+      res.status(400).json({
+        message: 'missing required name field; name cannot be an empty string',
+      });
+    } else if (!body.description || body.description === "") {
+      res.status(400).json({
+        message: 'missing required description field; description cannot be an empty string',
+      });
+    }
+  }
+
+  req.project = body;
+  next();
+}
+
 // action middleware
 exports.validateActionId = function(req, res, next) {
   const { id } = req.params;
