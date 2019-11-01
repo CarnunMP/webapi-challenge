@@ -66,4 +66,24 @@ router.delete('/:id', (req, res) => {
     });
 })
 
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  const { action } = req;
+  const updatedAction = req.body;
+
+  actionDb.update(id, updatedAction)
+    .then(newAction => {
+      res.status(200).json({
+        message: 'successfully updated action',
+        action,
+        newAction,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'PUT /projects/:id/actions/:id: ' + err.message,
+      });
+    });
+})
+
 module.exports = router;
