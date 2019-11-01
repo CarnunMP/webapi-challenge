@@ -84,6 +84,6 @@ router.put('/:id', (req, res) => {
         message: 'PUT /projects/:id/actions/:id: ' + err.message,
       });
     });
-})
+});
 
 module.exports = router;

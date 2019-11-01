@@ -80,4 +80,24 @@ router.delete('/:id/', (req, res) => {
     });
 });
 
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  const { project } = req;
+  const updatedProject = req.body;
+
+  projectDb.update(id, updatedProject)
+    .then(newProject => {
+      res.status(200).json({
+        message: 'successfully updated project',
+        project,
+        newProject,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'PUT /projects/:id: ' + err.message,
+      });
+    });
+});
+
 module.exports = router;
