@@ -3,9 +3,8 @@ const projectDb = require('../data/helpers/projectModel');
 const middleware = require('../middleware');
 
 const router = express.Router();
-// router.use('/:id', middleware.validateProjectId);
+router.use('/:id', middleware.validateProjectId);
 
-// CRUD here
 router.get('/', (req, res) => {
   projectDb.get()
     .then(projects => {
@@ -16,6 +15,10 @@ router.get('/', (req, res) => {
         message: "GET /projects: " + err.message,
       });
     });
-})
+});
+
+router.get('/:id', (req, res) => {
+  res.status(200).json(req.project);
+});
 
 module.exports = router;
