@@ -33,8 +33,6 @@ router.post('/', middleware.validateAction, (req, res) => {
     project_id: id,
   };
 
-
-
   actionDb.insert(actionWithProjectId)
     .then(action => {
       res.status(201).json({
@@ -46,7 +44,26 @@ router.post('/', middleware.validateAction, (req, res) => {
       res.status(500).json({
         message: 'POST /projects/:id/actions: ' + err.message,
       });
-    })
+    });
 });
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  const { action } = req;
+  
+  actionDb.remove(id)
+    .then(count => {
+      res.status(200).json({
+        message: 'successfully deleted action',
+        action,
+        count,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'DELETE /projects/:id/actions/:id: ' + err.message,
+      });
+    });
+})
 
 module.exports = router;
