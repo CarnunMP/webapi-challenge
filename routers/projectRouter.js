@@ -1,5 +1,6 @@
 const express = require('express');
 const projectDb = require('../data/helpers/projectModel');
+const actionDb = require('../data/helpers/actionModel');
 const middleware = require('../middleware');
 
 const router = express.Router();
@@ -34,6 +35,49 @@ router.post('/', middleware.validateProject, (req, res) => {
         message: 'POST /projects: ' + err.message,
       });
     })
+});
+
+router.delete('/:id/', (req, res) => {
+  const { id } = req.params;
+  const { project } = req;
+  let actionsCount = 0;
+
+  projectDb.remove(id)
+    .then(count => {
+      projectDb.getProjectActions(id) 
+      .then(actions => {
+        if (actions) {
+          actions.forEach(action => {
+            actionDb.remove(action.id)
+              .then(count => {
+                actionsCount += count;
+              })
+              .catch(err => {
+                res.status(500).json({
+                  message: 'DELETE /projects/:id/actions/:id: ' + err.message,
+                });
+              });
+          })
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          message: 'DELETE /projects/:id/actions/:id: ' + err.message,
+        });
+      });
+      // Ah. Seems the actions are deleted automatically... nice!
+
+      res.status(200).json({
+        message: 'successfully deleted project',
+        project,
+        deletedActions: actionsCount,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'DELETE /projects/:id: ' + err.message,
+      });
+    });
 });
 
 module.exports = router;
