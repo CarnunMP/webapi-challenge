@@ -25,4 +25,28 @@ router.get('/:id', (req, res) => {
   res.status(200).json(req.action);
 })
 
+router.post('/', middleware.validateAction, (req, res) => {
+  const { id } = req.project; // Project id!
+
+  const actionWithProjectId = {
+    ...req.action,
+    project_id: id,
+  };
+
+
+
+  actionDb.insert(actionWithProjectId)
+    .then(action => {
+      res.status(201).json({
+        message: 'successfully added action',
+        action,
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: 'POST /projects/:id/actions: ' + err.message,
+      });
+    })
+});
+
 module.exports = router;

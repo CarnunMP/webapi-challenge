@@ -34,6 +34,6 @@ router.post('/', middleware.validateProject, (req, res) => {
         message: 'POST /projects: ' + err.message,
       });
     })
-})
+});
 
 module.exports = router;
